@@ -22,7 +22,7 @@ void loop() {
     int status = 1, stat_loc;
 
     char *buffer;
-    char **tokens;
+    char **tokens, **tokens_to_file;
 
     pid_t pid_child;
     FILE *file_ptr;
@@ -32,7 +32,7 @@ void loop() {
         buffer = read_command();
         tokens = tokenize(buffer);
 
-        char **tokens_to_file = tokens;
+        tokens_to_file = tokens;
 
         pid_child = fork();
 
