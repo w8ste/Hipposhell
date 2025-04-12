@@ -38,7 +38,10 @@ void loop() {
 
         if(0 == pid_child) {
             // Execute command received as input
-            execvp(tokens[0], tokens);
+            if (execvp(tokens[0], tokens) < 0) {
+                fprintf(stderr, "%s%s: command not found%s\n", RED, tokens[0], RESET);
+                exit(0);
+            }
         }
         else if (-1 == pid_child) {
             fprintf(stderr, "%sAn error has occured whilst trying to fork!%s\n", RED, RESET);
