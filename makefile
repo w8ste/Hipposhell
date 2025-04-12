@@ -8,4 +8,5 @@ run: main
 
 clean:
 	rm -f hipposhell
+	rm -f hipposhell_history
 

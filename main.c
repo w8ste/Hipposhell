@@ -10,6 +10,8 @@
 
 #define TK_BUFF_SIZE 64
 #define TOKEN_DELIMITER " \t\r\n"
+#define history_path "./hipposhell_history"
+
 void check_buffer(char *buffer);
 void check_tokens(char **buffer);
 char *read_command();
@@ -18,13 +20,19 @@ char **tokenize(char *buffer);
 // main programm loop
 void loop() {
     int status = 1, stat_loc;
+
     char *buffer;
     char **tokens;
+
     pid_t pid_child;
+    FILE *file_ptr;
+
     while (status) {
         printf("<(^^)> ");
         buffer = read_command();
         tokens = tokenize(buffer);
+
+        char **tokens_to_file = tokens;
 
         pid_child = fork();
 
@@ -38,6 +46,20 @@ void loop() {
         else {
             // Parent waiting for child process to die
             waitpid(pid_child, &stat_loc, WUNTRACED);
+        }
+
+        file_ptr = fopen(history_path, "a");
+
+        if(NULL == file_ptr) {
+            fprintf(stderr, "%sAn error has occured whilst trying to write the history file!%s\n", RED, RESET);
+        }
+        else {
+            while (*tokens_to_file != NULL) {
+                fprintf(file_ptr, "%s ", *tokens_to_file);
+                tokens_to_file++;
+            }
+            fprintf(file_ptr, "\n");
+            fclose(file_ptr);
         }
 
         free(buffer);
